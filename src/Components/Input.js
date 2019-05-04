@@ -4,7 +4,6 @@ class Input extends PureComponent {
 
     onChange = (e) => {
         const { onChange, id }= this.props;
-        console.log(e.target.value);
         onChange(e, id)
     };
 

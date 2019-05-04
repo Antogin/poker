@@ -141,12 +141,23 @@ class App extends Component {
 
     findWinner = () => {
         const { players } = this.state;
-        const hands = players.map((player) => {
-            return player.cards.map((card) => card.pair).join(' ');
+        const playerWithHands = players.map((player) => {
+            return {
+                ...player,
+                hand: player.cards.map((card) => card.pair).join(' ')
+            }
         });
 
-        const winnerIndex = poker.judgeWinner(hands);
-        alert(`${players[winnerIndex].name} Won`)
+
+        const winningPlayer = playerWithHands.reduce((best, player) => {
+            if(!best) {
+                return player
+            }
+            return poker.judgeWinner([best.hand, player.hand]) ? player : best
+        }, null);
+
+
+        alert(`${winningPlayer.name} Won`)
     };
 
 	render() {
