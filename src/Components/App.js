@@ -17,12 +17,14 @@ class App extends Component {
 				{
 					name: 'player 1',
 					id: generateId(),
-					cards: []
+					cards: [],
+                    edit: false
 				},
 				{
 					name: 'player 2',
 					id: generateId(),
-					cards: []
+					cards: [],
+                    edit: false
 				}
 			]
 		};
@@ -34,7 +36,7 @@ class App extends Component {
 		const id = generateId();
 		this.setState({
 			...this.state,
-			players: [ ...players, { name: id, cards: [], id } ]
+			players: [ ...players, { name: id, cards: [], id, edit: false } ]
 		});
 	};
 
@@ -46,6 +48,44 @@ class App extends Component {
             players: players.filter((player) => player.id !== id)
         });
     };
+
+    editPlayer = (id) => {
+        const { players } = this.state;
+
+        this.setState({
+            ...this.state,
+            players: players.map((player) => {
+
+                if(player.id === id){
+                    return {
+                        ...player,
+                        edit: !player.edit
+                    }
+                }
+                return player;
+
+            })
+        });
+    };
+
+    changeName = (e, id) => {
+        const { players } = this.state;
+
+        this.setState({
+            ...this.state,
+            players: players.map((player) => {
+                if(player.id === id){
+                    return {
+                        ...player,
+                        name: e.target.value
+                    }
+                }
+                return player;
+
+            })
+        });
+    };
+
 	render() {
 		const { players } = this.state;
 
@@ -63,7 +103,10 @@ class App extends Component {
                         {players.map((player) => (
 					    <Player
                             deletePlayer={() => this.deletePlayer(player.id)}
+                            editPlayer={() => this.editPlayer(player.id)}
                             key={player.id}
+                            edit={player.edit}
+                            changeName={(e) => this.changeName(e, player.id)}
                             name={player.name} />
 					    ))}
 					</section>
