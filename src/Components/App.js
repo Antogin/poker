@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { generateId, newDeck } from "../utils";
 import { shuffle }from 'lodash';
-
+import * as poker from 'poker-hands'
 import Layout from "./Layout";
 import Deck from "./Deck";
 import Player from "./Player";
@@ -27,7 +27,7 @@ class App extends Component {
                     edit: false
 				}
 			],
-            deck: newDeck(),
+            deck: [],
             usedCards: []
 		};
 	}
@@ -100,14 +100,14 @@ class App extends Component {
     };
 
     dealCards = () => {
-        const {deck, players } = this.state;
+        const { players } = this.state;
 
-        const newDeck = shuffle(deck);
+        const deck = shuffle(newDeck());
 
         let usedCards = [];
 
         const playerWithCards = players.map(player => {
-            const cards = newDeck.splice(0,5);
+            const cards = deck.splice(0,5);
 
             usedCards = usedCards.concat(cards);
             return {...player, cards}
@@ -115,10 +115,20 @@ class App extends Component {
 
         this.setState({
             ...this.state,
-            deck: newDeck,
+            deck,
             usedCards,
             players: playerWithCards
         });
+    };
+
+    findWinner = () => {
+        const { players } = this.state;
+        const hands = players.map((player) => {
+            return player.cards.map((card) => card.pair).join(' ');
+        });
+
+        const winnerIndex = poker.judgeWinner(hands);
+        alert(`${players[winnerIndex].name} Won`)
     };
 
 	render() {
@@ -150,7 +160,8 @@ class App extends Component {
 						<Button onClick={this.addPlayer} icon="🙋‍♀️">
 							Add new player
 						</Button>
-						<Button icon="🏆">Find the winner</Button>
+						<Button onClick={this.findWinner} icon="🏆">Find the winner</Button>
+						<Button onClick={this.dealCards} icon="🔀">Deal cards</Button>
 					</Footer>
 				</section>
 			</Layout>

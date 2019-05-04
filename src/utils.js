@@ -11,6 +11,6 @@ export const generateId = () => {
 
 export const newDeck = () => flatten(suits.map(suit => {
     return values.map((value) => {
-        return {value, suit}
+        return {value, suit, pair: `${value}${suit}`}
     })
 }));
