@@ -27,7 +27,8 @@ class App extends Component {
                     edit: false
 				}
 			],
-            deck: newDeck()
+            deck: newDeck(),
+            usedCards: []
 		};
 	}
 
@@ -36,16 +37,19 @@ class App extends Component {
     }
 
     addPlayer = () => {
-		const { players, deck } = this.state;
+		const { players, deck, usedCards} = this.state;
 
 		const id = generateId();
 
         const newDeck = [...deck];
 
+        const cards = newDeck.splice(0,5);
+
         this.setState({
 			...this.state,
             deck: newDeck,
-			players: [ ...players, { name: id, cards: newDeck.splice(0,5), id, edit: false } ]
+            usedCards: usedCards.concat(cards),
+			players: [ ...players, { name: id, cards: cards, id, edit: false } ]
 		});
 	};
 
@@ -100,25 +104,31 @@ class App extends Component {
 
         const newDeck = shuffle(deck);
 
+        let usedCards = [];
+
         const playerWithCards = players.map(player => {
-            return {...player, cards: newDeck.splice(0,5)}
+            const cards = newDeck.splice(0,5);
+
+            usedCards = usedCards.concat(cards);
+            return {...player, cards}
         });
 
         this.setState({
             ...this.state,
             deck: newDeck,
+            usedCards,
             players: playerWithCards
         });
     };
 
 	render() {
-		const { players , deck} = this.state;
+		const { players , deck, usedCards} = this.state;
 
 		return (
 			<Layout>
 				<section>
 					<h1>Cards deck</h1>
-					<Deck deck={deck} />
+					<Deck usedCards={usedCards} deck={deck} />
 				</section>
 				<section>
 					<header>
