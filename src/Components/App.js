@@ -55,10 +55,23 @@ class App extends Component {
 
     deletePlayer = (id) => {
         const { players } = this.state;
+        const deck = shuffle(newDeck());
+
+        let usedCards = [];
+
+        const playerWithCards = players
+            .filter((player) => player.id !== id)
+            .map(player => {
+            const cards = deck.splice(0,5);
+            usedCards = usedCards.concat(cards);
+            return {...player, cards}
+        });
 
         this.setState({
             ...this.state,
-            players: players.filter((player) => player.id !== id)
+            deck,
+            usedCards,
+            players: playerWithCards
         });
     };
 
@@ -134,6 +147,7 @@ class App extends Component {
 	render() {
 		const { players , deck, usedCards} = this.state;
 
+		const canDelete = players.length > 2;
 		return (
 			<Layout>
 				<section>
@@ -147,6 +161,7 @@ class App extends Component {
 					<section>
                         {players.map((player) => (
 					    <Player
+                            canDelete={canDelete }
                             deletePlayer={() => this.deletePlayer(player.id)}
                             editPlayer={() => this.editPlayer(player.id)}
                             key={player.id}
@@ -157,9 +172,12 @@ class App extends Component {
 					    ))}
 					</section>
 					<Footer>
-						<Button onClick={this.addPlayer} icon="🙋‍♀️">
-							Add new player
-						</Button>
+                        {
+                            players.length < 6 ?
+                                <Button onClick={this.addPlayer} icon="🙋‍♀️">
+							        Add new player
+						        </Button> : null
+                        }
 						<Button onClick={this.findWinner} icon="🏆">Find the winner</Button>
 						<Button onClick={this.dealCards} icon="🔀">Deal cards</Button>
 					</Footer>
