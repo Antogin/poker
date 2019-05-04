@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-
-import { suits, values, generateId } from "../utils";
+import { generateId, newDeck } from "../utils";
+import { shuffle }from 'lodash';
 
 import Layout from "./Layout";
 import Deck from "./Deck";
@@ -26,17 +26,26 @@ class App extends Component {
 					cards: [],
                     edit: false
 				}
-			]
+			],
+            deck: newDeck()
 		};
 	}
 
-	addPlayer = () => {
-		const { players } = this.state;
+	componentDidMount() {
+	    this.dealCards()
+    }
+
+    addPlayer = () => {
+		const { players, deck } = this.state;
 
 		const id = generateId();
-		this.setState({
+
+        const newDeck = [...deck];
+
+        this.setState({
 			...this.state,
-			players: [ ...players, { name: id, cards: [], id, edit: false } ]
+            deck: newDeck,
+			players: [ ...players, { name: id, cards: newDeck.splice(0,5), id, edit: false } ]
 		});
 	};
 
@@ -86,14 +95,30 @@ class App extends Component {
         });
     };
 
+    dealCards = () => {
+        const {deck, players } = this.state;
+
+        const newDeck = shuffle(deck);
+
+        const playerWithCards = players.map(player => {
+            return {...player, cards: newDeck.splice(0,5)}
+        });
+
+        this.setState({
+            ...this.state,
+            deck: newDeck,
+            players: playerWithCards
+        });
+    };
+
 	render() {
-		const { players } = this.state;
+		const { players , deck} = this.state;
 
 		return (
 			<Layout>
 				<section>
 					<h1>Cards deck</h1>
-					<Deck suits={suits} values={values} />
+					<Deck deck={deck} />
 				</section>
 				<section>
 					<header>
@@ -105,6 +130,7 @@ class App extends Component {
                             deletePlayer={() => this.deletePlayer(player.id)}
                             editPlayer={() => this.editPlayer(player.id)}
                             key={player.id}
+                            cards={player.cards}
                             edit={player.edit}
                             changeName={(e) => this.changeName(e, player.id)}
                             name={player.name} />
