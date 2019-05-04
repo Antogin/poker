@@ -37,19 +37,20 @@ class App extends Component {
     }
 
     addPlayer = () => {
-		const { players, deck, usedCards} = this.state;
+		const { players } = this.state;
+        const deck = shuffle(newDeck());
 
 		const id = generateId();
+        const newPlayers = [ ...players, { name: id, cards: [], id, edit: false } ];
 
-        const newDeck = [...deck];
+        const {drawableDeck, usedCards, playersWithCards} = this.dealCardsToPlayers(newPlayers, deck);
 
-        const cards = newDeck.splice(0,5);
 
         this.setState({
 			...this.state,
-            deck: newDeck,
-            usedCards: usedCards.concat(cards),
-			players: [ ...players, { name: id, cards: cards, id, edit: false } ]
+            deck: drawableDeck,
+            usedCards,
+			players: playersWithCards
 		});
 	};
 
@@ -57,21 +58,16 @@ class App extends Component {
         const { players } = this.state;
         const deck = shuffle(newDeck());
 
-        let usedCards = [];
+        const newPlayers = players.filter((player) => player.id !== id);
 
-        const playerWithCards = players
-            .filter((player) => player.id !== id)
-            .map(player => {
-            const cards = deck.splice(0,5);
-            usedCards = usedCards.concat(cards);
-            return {...player, cards}
-        });
+        const {drawableDeck, usedCards, playersWithCards} = this.dealCardsToPlayers(newPlayers, deck);
+
 
         this.setState({
             ...this.state,
-            deck,
+            deck: drawableDeck,
             usedCards,
-            players: playerWithCards
+            players: playersWithCards
         });
     };
 
@@ -112,25 +108,37 @@ class App extends Component {
         });
     };
 
+    dealCardsToPlayers(players, deck) {
+        let usedCards = [];
+
+        const drawableDeck = [...deck];
+
+        const playersWithCards = players.map(player => {
+            const cards = drawableDeck.splice(0,5);
+            usedCards = usedCards.concat(cards);
+            return {...player, cards}
+        });
+
+        return{
+            drawableDeck,
+            usedCards,
+            playersWithCards
+        }
+    }
+
     dealCards = () => {
         const { players } = this.state;
 
         const deck = shuffle(newDeck());
 
-        let usedCards = [];
 
-        const playerWithCards = players.map(player => {
-            const cards = deck.splice(0,5);
-
-            usedCards = usedCards.concat(cards);
-            return {...player, cards}
-        });
+        const {drawableDeck, usedCards, playersWithCards} = this.dealCardsToPlayers(players, deck);
 
         this.setState({
             ...this.state,
-            deck,
+            deck:drawableDeck,
             usedCards,
-            players: playerWithCards
+            players: playersWithCards
         });
     };
 
