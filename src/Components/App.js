@@ -167,19 +167,20 @@ class App extends Component {
                         {players.map((player) => (
 					    <Player
                             canDelete={canDelete }
-                            deletePlayer={() => this.deletePlayer(player.id)}
-                            editPlayer={() => this.editPlayer(player.id)}
+                            deletePlayer={this.deletePlayer}
+                            editPlayer={this.editPlayer}
                             key={player.id}
+                            id={player.id}
                             cards={player.cards}
                             edit={player.edit}
-                            changeName={(e) => this.changeName(e, player.id)}
+                            changeName={this.changeName}
                             name={player.name} />
 					    ))}
 					</section>
 					<Footer>
                         {
                             players.length < 6 ?
-                                <Button onClick={this.addPlayer} id="addPlayer" icon="🙋‍♀️">
+                                <Button onClick={this.addPlayer} icon="🙋‍♀️">
 							        Add new player
 						        </Button> : null
                         }

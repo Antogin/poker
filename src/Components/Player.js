@@ -1,16 +1,17 @@
 import React from "react";
 
 import Button from "./Button";
+import Input from "./Input";
 
 import { Card, PlayerHand } from "../Styles/Styled";
 
-const Player = ({ name , deletePlayer, editPlayer, edit, changeName, cards, canDelete }) => (
+const Player = ({ name , deletePlayer, editPlayer, edit, changeName, cards, canDelete, id }) => (
 	<article>
 		<p>
 
-			{edit ? <input type="text" value={name}  onChange={changeName} /> : name}
-			<Button icon={edit?"✅": "✏️"} onClick={editPlayer}>Edit</Button>
-            {canDelete ?<Button icon="🔥" onClick={deletePlayer}>Remove</Button>: null}
+			{edit ? <Input type="text"  value={name} id={id} onChange={changeName} /> : name}
+			<Button id={id} icon={edit?"✅": "✏️"} onClick={editPlayer}>Edit</Button>
+            {canDelete ?<Button id={id} icon="🔥" onClick={deletePlayer}>Remove</Button>: null}
 		</p>
 		<PlayerHand>
             {
