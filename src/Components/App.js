@@ -77,7 +77,6 @@ class App extends Component {
         this.setState({
             ...this.state,
             players: players.map((player) => {
-
                 if(player.id === id){
                     return {
                         ...player,
@@ -103,7 +102,6 @@ class App extends Component {
                     }
                 }
                 return player;
-
             })
         });
     };
@@ -130,7 +128,6 @@ class App extends Component {
         const { players } = this.state;
 
         const deck = shuffle(newDeck());
-
 
         const {drawableDeck, usedCards, playersWithCards} = this.dealCardsToPlayers(players, deck);
 
@@ -182,7 +179,7 @@ class App extends Component {
 					<Footer>
                         {
                             players.length < 6 ?
-                                <Button onClick={this.addPlayer} icon="🙋‍♀️">
+                                <Button onClick={this.addPlayer} id="addPlayer" icon="🙋‍♀️">
 							        Add new player
 						        </Button> : null
                         }
