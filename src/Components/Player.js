@@ -4,12 +4,12 @@ import Button from "./Button";
 
 import { Card, PlayerHand } from "../Styles/Styled";
 
-const Player = ({ name }) => (
+const Player = ({ name , deletePlayer}) => (
 	<article>
 		<p>
 			{name}
 			<Button icon="✏️">Edit</Button>
-			<Button icon="🔥">Remove</Button>
+			<Button icon="🔥" onClick={deletePlayer}>Remove</Button>
 		</p>
 		<PlayerHand>
 				<Card suit="D" value="A" selected={true}>

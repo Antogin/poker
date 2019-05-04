@@ -38,6 +38,14 @@ class App extends Component {
 		});
 	};
 
+    deletePlayer = (id) => {
+        const { players } = this.state;
+
+        this.setState({
+            ...this.state,
+            players: players.filter((player) => player.id !== id)
+        });
+    };
 	render() {
 		const { players } = this.state;
 
@@ -51,7 +59,14 @@ class App extends Component {
 					<header>
 						<h1>Players</h1>
 					</header>
-					<section>{players.map((player) => <Player key={player.id} name={player.name} />)}</section>
+					<section>
+                        {players.map((player) => (
+					    <Player
+                            deletePlayer={() => this.deletePlayer(player.id)}
+                            key={player.id}
+                            name={player.name} />
+					    ))}
+					</section>
 					<Footer>
 						<Button onClick={this.addPlayer} icon="🙋‍♀️">
 							Add new player
